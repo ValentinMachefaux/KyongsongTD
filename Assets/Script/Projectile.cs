@@ -5,9 +5,10 @@ public class Projectile : MonoBehaviour
 {
     public Transform target;
     public float speed = 10f;
-    public float damage = 1f;
+    public float damage = 10f;
     public float lifetime = 5f; // Durée avant auto-destruction
-
+    public string shooterTag;
+    
     void Start()
     {
         Destroy(gameObject, lifetime); // Auto-destruction après quelques secondes
@@ -31,15 +32,43 @@ public class Projectile : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        // Évite les collisions avec le tireur lui-même ou ses alliés
+        if (other.CompareTag(shooterTag))
+            return;
+
+        bool hit = false;
+
         if (other.CompareTag("Base"))
         {
             Base baseObject = other.GetComponent<Base>();
             if (baseObject != null)
             {
-                baseObject.TakeDamage(damage);  // Infliger des dégâts à la base
+                baseObject.TakeDamage(damage);
+                hit = true;
             }
+        }
+        else if (other.CompareTag("Enemy"))
+        {
+            Enemy enemyObject = other.GetComponent<Enemy>();
+            if (enemyObject != null)
+            {
+                enemyObject.TakeDamage(damage);
+                hit = true;
+            }
+        }
+        else if (other.CompareTag("Tower"))
+        {
+            Tower towerObject = other.GetComponent<Tower>();
+            if (towerObject != null)
+            {
+                towerObject.TakeDamage(damage);
+                hit = true;
+            }
+        }
 
-            Destroy(gameObject);  // Détruire le projectile après avoir infligé des dégâts à la base
+        if (hit)
+        {
+            Destroy(gameObject);
         }
     }
 }

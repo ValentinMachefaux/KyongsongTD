@@ -15,8 +15,8 @@ GameObject:
   - component: {fileID: 3985813283703609771}
   - component: {fileID: 6627291210751424892}
   m_Layer: 0
-  m_Name: Projectile
-  m_TagString: Untagged
+  m_Name: Basic Projectile
+  m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -123,9 +123,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 2811930104169880018}
-  speed: 10
+  speed: 5
   damage: 1
-  lifetime: 5
+  lifetime: 2
 --- !u!54 &6627291210751424892
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    public float health = 10f;
+    
     [Header("Déplacement")]
     public float speed = 2f;
     public float rotationSpeed = 5f;
@@ -63,6 +65,21 @@ public class Enemy : MonoBehaviour
         if (targetObject != null)
             target = targetObject.transform;
     }
+    
+    public void TakeDamage(float amount)
+    {
+        if (health <= 0f)
+        {
+            Die();
+        }
+        health -= amount;
+    }
+        
+    private void Die()
+    {
+        Destroy(gameObject);  // Détruire l'objet lorsque la base n'a plus de points de vie
+    }
+    
 
     protected void MoveTowardsTarget(Transform tgt)
     {
@@ -82,11 +99,12 @@ public class Enemy : MonoBehaviour
 
     protected void Shoot()
     {
+        if (attackTarget == null) return;
+
         Debug.Log("Tir déclenché sur : " + attackTarget.name);
 
         GameObject projectileGO = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
-    
-        // Empêche la collision immédiate avec soi-même
+
         Collider myCollider = GetComponent<Collider>();
         Collider projectileCollider = projectileGO.GetComponent<Collider>();
         if (myCollider != null && projectileCollider != null)
@@ -94,32 +112,33 @@ public class Enemy : MonoBehaviour
             Physics.IgnoreCollision(projectileCollider, myCollider);
         }
 
-        // Si nécessaire : passe des infos au projectile
         Projectile projectile = projectileGO.GetComponent<Projectile>();
         if (projectile != null)
         {
             projectile.target = attackTarget;
             projectile.damage = damage;
+            projectile.shooterTag = gameObject.tag; // Définir le tag du tireur
         }
     }
-
+    
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Base"))
+        if (other.CompareTag("Base") || other.CompareTag("Tower"))
         {
             Transform detected = other.transform;
             if (!targetsInRange.Contains(detected))
             {
                 targetsInRange.Add(detected);
+
                 if (attackTarget == null)
                     attackTarget = detected;
             }
         }
     }
-
+    
     void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Base"))
+        if (other.CompareTag("Base") || other.CompareTag("Tower"))
         {
             Transform detected = other.transform;
             targetsInRange.Remove(detected);

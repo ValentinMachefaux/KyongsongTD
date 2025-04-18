@@ -168,7 +168,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: abb4c6cc0ddda73469dbb5e415646646,
         type: 3}
       propertyPath: m_Name
-      value: plants
+      value: Basic Enemy
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: abb4c6cc0ddda73469dbb5e415646646,
         type: 3}
@@ -224,6 +224,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a6d20f87fd3c2b4fb0527546ff8dfe1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  health: 2
   speed: 2
   rotationSpeed: 5
   target: {fileID: 0}
