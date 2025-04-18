@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Script
 {
@@ -25,16 +26,20 @@ namespace Script
         
         public void TakeDamage(float amount)
         {
-            health -= amount;
+            Debug.Log("Vie restante : " + health);
+
             if (health <= 0f)
             {
                 Die();
             }
+            health -= amount;
         }
-
-        // Méthode pour détruire la base
+        
         private void Die()
         {
+
+            // Détruire la base
+            SceneManager.LoadScene(1, LoadSceneMode.Additive);
             Destroy(gameObject);  // Détruire l'objet lorsque la base n'a plus de points de vie
         }
 
