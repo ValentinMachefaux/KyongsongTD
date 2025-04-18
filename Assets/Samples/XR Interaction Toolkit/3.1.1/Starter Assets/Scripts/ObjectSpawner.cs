@@ -29,6 +29,13 @@ namespace UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets
         [SerializeField]
         [Tooltip("The list of prefabs available to spawn.")]
         List<GameObject> m_ObjectPrefabs = new List<GameObject>();
+        
+        [SerializeField]
+        [Tooltip("Liste des prefabs qui ne doivent être spawnés qu'une seule fois.")]
+        List<GameObject> m_UniquePrefabs = new List<GameObject>();
+
+        readonly Dictionary<GameObject, GameObject> m_InstantiatedUniqueObjects = new Dictionary<GameObject, GameObject>();
+
 
         /// <summary>
         /// The list of prefabs available to spawn.
@@ -205,7 +212,16 @@ namespace UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets
             }
 
             var objectIndex = isSpawnOptionRandomized ? Random.Range(0, m_ObjectPrefabs.Count) : m_SpawnOptionIndex;
-            var newObject = Instantiate(m_ObjectPrefabs[objectIndex]);
+            var prefabToSpawn = m_ObjectPrefabs[objectIndex];
+
+            // Vérifie si c'est un prefab unique déjà instancié
+            if (m_UniquePrefabs.Contains(prefabToSpawn) && m_InstantiatedUniqueObjects.ContainsKey(prefabToSpawn))
+            {
+                Debug.Log($"Le prefab unique '{prefabToSpawn.name}' a déjà été instancié.");
+                return false;
+            }
+
+            var newObject = Instantiate(prefabToSpawn);
             if (m_SpawnAsChildren)
                 newObject.transform.parent = transform;
 
@@ -230,8 +246,13 @@ namespace UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets
                 visualizationTrans.rotation = newObject.transform.rotation;
             }
 
+            // Enregistre l'objet s'il est unique
+            if (m_UniquePrefabs.Contains(prefabToSpawn))
+                m_InstantiatedUniqueObjects[prefabToSpawn] = newObject;
+
             objectSpawned?.Invoke(newObject);
             return true;
         }
+
     }
 }
