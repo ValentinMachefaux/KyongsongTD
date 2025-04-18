@@ -1,46 +1,39 @@
-public class Enemy : UnitBase
-{
-    public float moveSpeed = 2f;
-    private Transform[] pathPoints;
-    private int currentPoint = 0;
-    public int reward = 10;
+using UnityEngine;
 
-    void Start()
-    {
-        // Assume path points set externally or via a manager
-        pathPoints = WaypointManager.Instance.GetPath();
-    }
+public class Enemy : MonoBehaviour
+{
+    public Transform target;
+    public float speed = 2f;
+    public float rotationSpeed = 5f;
 
     void Update()
     {
-        MoveAlongPath();
+        if (target == null) return;
 
-        // Exemple : tirer sur une tour s’il y en a une à portée
-        Transform target = FindNearestTarget("Tower");
-        if (target != null)
-        {
-            Shoot(target);
-        }
+        MoveTowardsTarget(target);
+        RotateTowardsTarget(target);
     }
 
-    void MoveAlongPath()
+    // Initialise la cible à suivre
+    public void Initialize(GameObject targetObject)
     {
-        if (currentPoint >= pathPoints.Length) return;
-
-        Transform targetPoint = pathPoints[currentPoint];
-        Vector3 dir = (targetPoint.position - transform.position).normalized;
-        transform.Translate(dir * moveSpeed * Time.deltaTime, Space.World);
-
-        if (Vector3.Distance(transform.position, targetPoint.position) < 0.1f)
-        {
-            currentPoint++;
-        }
+        if (targetObject != null)
+            target = targetObject.transform;
     }
 
-    protected override void Die()
-{
-    GameManager.Instance.AddMoney(reward); // Exemple : 10 par ennemi
-    base.Die(); // appelle le Die() de UnitBase → détruit l’objet
-}
+    protected void MoveTowardsTarget(Transform target)
+    {
+        Vector3 direction = (target.position - transform.position).normalized;
+        transform.position = Vector3.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
+    }
 
+    protected void RotateTowardsTarget(Transform target)
+    {
+        Vector3 direction = (target.position - transform.position).normalized;
+        direction.y = 0;
+        if (direction == Vector3.zero) return;
+
+        Quaternion lookRotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, rotationSpeed * Time.deltaTime);
+    }
 }
