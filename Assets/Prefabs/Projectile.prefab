@@ -124,7 +124,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 2811930104169880018}
   speed: 10
-  damage: 10
+  damage: 1
   lifetime: 5
 --- !u!54 &6627291210751424892
 Rigidbody:

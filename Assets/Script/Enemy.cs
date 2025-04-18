@@ -16,7 +16,7 @@ public class Enemy : MonoBehaviour
     [Header("Attaque")]
     public GameObject projectilePrefab;
     public Transform firePoint;
-    public float damage = 10f;
+    public float damage = 1f;
     public float shootCooldown = 2f;
 
     private float shootTimer = 0f;

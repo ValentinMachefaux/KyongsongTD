@@ -230,7 +230,7 @@ MonoBehaviour:
   projectilePrefab: {fileID: 3141938461793590107, guid: 059a9ce8bade84e4198fe10575401427,
     type: 3}
   firePoint: {fileID: 2888196917669150310}
-  damage: 10
+  damage: 1
   shootCooldown: 1
 --- !u!135 &1375586415877655911
 SphereCollider:

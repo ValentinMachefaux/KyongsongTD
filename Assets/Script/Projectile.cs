@@ -1,10 +1,11 @@
+using Script;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
     public Transform target;
     public float speed = 10f;
-    public float damage = 10f;
+    public float damage = 1f;
     public float lifetime = 5f; // Durée avant auto-destruction
 
     void Start()
@@ -30,16 +31,15 @@ public class Projectile : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.transform == target)
+        if (other.CompareTag("Base"))
         {
-            // Appliquer les dégâts à la cible si elle a un composant "Health"
-            // Health health = target.GetComponent<Health>();
-            // if (health != null)
-            // {
-            //     health.TakeDamage(damage);
-            // }
+            Base baseObject = other.GetComponent<Base>();
+            if (baseObject != null)
+            {
+                baseObject.TakeDamage(damage);  // Infliger des dégâts à la base
+            }
 
-            Destroy(gameObject);
+            Destroy(gameObject);  // Détruire le projectile après avoir infligé des dégâts à la base
         }
     }
 }

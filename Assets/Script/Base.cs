@@ -4,6 +4,8 @@ namespace Script
 {
     public class Base : MonoBehaviour
     {
+        public float health = 10f;
+        
         public GameObject enemyPrefab;
         public Transform baseTarget;
         public float spawnRadius = 5f;
@@ -19,6 +21,21 @@ namespace Script
                 SpawnEnemy();
                 timer = 0f;
             }
+        }
+        
+        public void TakeDamage(float amount)
+        {
+            health -= amount;
+            if (health <= 0f)
+            {
+                Die();
+            }
+        }
+
+        // Méthode pour détruire la base
+        private void Die()
+        {
+            Destroy(gameObject);  // Détruire l'objet lorsque la base n'a plus de points de vie
         }
 
         void SpawnEnemy()
