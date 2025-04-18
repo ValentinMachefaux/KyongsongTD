@@ -37,7 +37,7 @@ namespace Script
             Enemy enemy = enemyGO.GetComponent<Enemy>();
             if (enemy != null)
             {
-                enemy.Initialize(this.gameObject); // Passe l'objet "Base" comme cible
+                enemy.Initialize(this.gameObject);
             }
         }
     }
