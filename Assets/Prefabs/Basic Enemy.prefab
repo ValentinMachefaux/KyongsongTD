@@ -429,6 +429,7 @@ MonoBehaviour:
   firePoint: {fileID: 2888196917669150310}
   damage: 1
   shootCooldown: 1
+  damageSound: {fileID: 8300000, guid: df49b801e24076a4d980c0ad52b43374, type: 3}
 --- !u!54 &4086055976986155133
 Rigidbody:
   m_ObjectHideFlags: 0

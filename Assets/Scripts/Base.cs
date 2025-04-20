@@ -39,7 +39,7 @@ namespace Script
         {
 
             // Détruire la base
-            SceneManager.LoadScene(0, LoadSceneMode.Additive);
+            SceneManager.LoadScene(0);
             Destroy(gameObject);  // Détruire l'objet lorsque la base n'a plus de points de vie
         }
 

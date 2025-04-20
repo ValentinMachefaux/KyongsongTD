@@ -7,6 +7,7 @@ public class Tower : MonoBehaviour
 
     [Header("Déplacement")]
     private Vector3 initialDirection;
+    public float rotationSpeed = 2f; // Vitesse de rotation
 
     [Header("Cibles")]
     private Transform attackTarget; // cible détectée dans le champ
@@ -24,6 +25,10 @@ public class Tower : MonoBehaviour
     {
         if (attackTarget != null)
         {
+            Vector3 direction = (attackTarget.position - transform.position).normalized;
+            Quaternion lookRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
+            
             shootTimer += Time.deltaTime;
             if (shootTimer >= shootCooldown)
             {

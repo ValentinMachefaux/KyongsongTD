@@ -100,11 +100,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 10
+  rotationSpeed: 2
   projectilePrefab: {fileID: 3141938461793590107, guid: 059a9ce8bade84e4198fe10575401427,
     type: 3}
   firePoint: {fileID: 2059512696783410908}
   damage: 1
   shootCooldown: 1
+  damageSound: {fileID: 8300000, guid: df49b801e24076a4d980c0ad52b43374, type: 3}
 --- !u!135 &2201983475773754552
 SphereCollider:
   m_ObjectHideFlags: 0

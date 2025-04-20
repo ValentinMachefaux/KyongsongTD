@@ -9,6 +9,9 @@ public class Projectile : MonoBehaviour
     public float lifetime = 5f; // Durée avant auto-destruction
     public string shooterTag;
     
+    public AudioClip impactSound;
+    public AudioSource audioSourcePrefab;
+    
     void Start()
     {
         Destroy(gameObject, lifetime); // Auto-destruction après quelques secondes
@@ -68,7 +71,19 @@ public class Projectile : MonoBehaviour
 
         if (hit)
         {
+            PlayImpactSound();
             Destroy(gameObject);
+        }
+    }
+    
+    void PlayImpactSound()
+    {
+        if (impactSound != null && audioSourcePrefab != null)
+        {
+            AudioSource tempAudio = Instantiate(audioSourcePrefab, transform.position, Quaternion.identity);
+            tempAudio.clip = impactSound;
+            tempAudio.Play();
+            Destroy(tempAudio.gameObject, impactSound.length); // Destruction après lecture
         }
     }
 }
