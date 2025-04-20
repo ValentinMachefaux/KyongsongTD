@@ -4,7 +4,7 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     public float health = 10f;
-    
+    private Animator animator;
     [Header("Déplacement")]
     public float speed = 2f;
     public float rotationSpeed = 5f;
@@ -22,6 +22,11 @@ public class Enemy : MonoBehaviour
     public float shootCooldown = 2f;
 
     private float shootTimer = 0f;
+
+    private void Awake()
+    {
+        animator = GetComponent<Animator>();
+    }
 
     void Start()
     {
@@ -77,8 +82,18 @@ public class Enemy : MonoBehaviour
         
     private void Die()
     {
-        Destroy(gameObject);  // Détruire l'objet lorsque la base n'a plus de points de vie
+        if (animator != null)
+        {
+            animator.SetTrigger("Die");
+            Destroy(gameObject, 2f); // Laisse le temps à l'animation
+        }
+        else
+        {
+            Debug.LogWarning("Animator non trouvé !");
+            Destroy(gameObject);
+        }
     }
+
     
 
     protected void MoveTowardsTarget(Transform tgt)
