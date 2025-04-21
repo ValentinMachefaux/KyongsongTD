@@ -84,6 +84,7 @@ public class Enemy : MonoBehaviour
     {
         if (animator != null)
         {
+            GameManager.Instance.AddScore(10);
             animator.SetTrigger("Die");
             Destroy(gameObject, 2f); // Laisse le temps à l'animation
         }
