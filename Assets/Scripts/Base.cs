@@ -37,13 +37,27 @@ namespace Script
 
                 if (countdownTimer <= 0f)
                 {
-                    // La base est posée et les vagues commencent
                     isBasePlaced = true;
-                    countdownText.gameObject.SetActive(false); // Cacher le texte du compte à rebours
-                    GameManager.Instance.StartNextWave();  // Démarre les vagues
-                }
 
-                return; // Si la base n'est pas encore posée, ne rien faire d'autre
+                    if (countdownText != null)
+                    {
+                        countdownText.gameObject.SetActive(false); // Cacher le texte du compte à rebours
+                    }
+                    else
+                    {
+                        Debug.LogWarning("countdownText is not assigned!"); // Avertissement si countdownText est null
+                    }
+
+                    if (GameManager.Instance != null)
+                    {
+                        GameManager.Instance.StartNextWave();  // Démarre les vagues
+                    }
+                    else
+                    {
+                        Debug.LogError("GameManager.Instance is null! Make sure the GameManager is properly initialized.");
+                    }
+                }
+                return; 
             }
 
             // Après la pose de la base, commence les vagues
