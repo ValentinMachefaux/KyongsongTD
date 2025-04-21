@@ -72,9 +72,8 @@ MonoBehaviour:
   enemyPrefab: {fileID: 8895753573341619173, guid: 99c200aab9f50ff44a0f9ff153c3e508,
     type: 3}
   baseTarget: {fileID: 757339800700370315}
-  spawnRadius: 5
+  spawnRadius: 3
   spawnInterval: 2
-  damageSound: {fileID: 8300000, guid: df49b801e24076a4d980c0ad52b43374, type: 3}
 --- !u!54 &8488972188252311497
 Rigidbody:
   m_ObjectHideFlags: 0

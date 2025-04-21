@@ -74,6 +74,15 @@ public class Tower : MonoBehaviour
             projectile.damage = damage;
             projectile.shooterTag = gameObject.tag; // Définir le tag du tireur
         }
+        
+        // Si c'est une boule de feu
+        Fireball fireball = projectileGO.GetComponent<Fireball>();
+        if (fireball != null)
+        {
+            fireball.targetPosition = attackTarget.position;
+            fireball.damage = damage;
+            fireball.shooterTag = gameObject.tag;
+        }
     }
 
     void OnTriggerEnter(Collider other)
