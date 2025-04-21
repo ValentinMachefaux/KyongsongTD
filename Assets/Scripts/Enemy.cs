@@ -6,7 +6,7 @@ public class Enemy : MonoBehaviour
     public float health = 10f;
     private Animator animator;
     [Header("Déplacement")]
-    public float speed = 2f;
+    public float speed = 0.05f;
     public float rotationSpeed = 5f;
     private Vector3 initialDirection;
 
@@ -116,7 +116,7 @@ public class Enemy : MonoBehaviour
     {
         if (attackTarget == null) return;
 
-        Debug.Log("Tir déclenché sur : " + attackTarget.name);
+        // Debug.Log("Tir déclenché sur : " + attackTarget.name);
 
         GameObject projectileGO = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
 

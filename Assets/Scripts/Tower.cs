@@ -56,7 +56,7 @@ public class Tower : MonoBehaviour
     {
         if (attackTarget == null) return;
 
-        Debug.Log("Tir déclenché sur : " + attackTarget.name);
+        // Debug.Log("Tir déclenché sur : " + attackTarget.name);
 
         // Créer le projectile (ici, une Fireball)
         GameObject projectileGO = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);

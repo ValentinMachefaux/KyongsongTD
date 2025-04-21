@@ -11,21 +11,24 @@ public class GameManager : MonoBehaviour
     private Base playerBase;
 
     public int score = 0; 
-    public int currentWave = 1;
+    public int currentWave = 0;
     public int currentLevel = 1; 
     public int scoreToNextLevel = 100;
 
-    public float waveCooldown = 20f;
+    public float waveCooldown = 30f;
     private float waveTimer = 0f;
     public TMP_Text waveCountText; 
 
     public bool isGameOver = false;
+
+    private bool firstWaveStarted = false;
 
     // UI Elements (pour afficher le score etc)
     public TMP_Text scoreText;
     public TMP_Text levelText;
     public TMP_Text waveText;
     public TMP_Text gameOverText;
+
 
     private void Awake()
     {
@@ -42,33 +45,31 @@ public class GameManager : MonoBehaviour
     }
 
 
-private void Update()
-{
-    // Si le jeu n'est pas terminé, gérer la progression des vagues
-    if (!isGameOver)
+    private void Update()
     {
-        waveTimer += Time.deltaTime;  // Compter le temps écoulé
-
-        // Vérifie si le cooldown est écoulé et lance la prochaine vague
-        if (waveTimer >= waveCooldown)
+        if (!isGameOver && Base.isBasePlaced)
         {
-            StartNextWave();  // Lancer la vague suivante
-            waveTimer = 0f;   // Réinitialiser le timer
-        }
+            waveTimer += Time.deltaTime;
 
-        // Afficher le compte à rebours avant la vague suivante
-        if (waveCountText != null)
+            if (waveTimer >= waveCooldown)
+            {
+                StartNextWave();
+                waveTimer = 0f;
+            }
+
+            if (waveCountText != null)
+            {
+                float timeLeft = Mathf.Max(0f, waveCooldown - waveTimer);
+                waveCountText.text = "Wave " + currentWave + " in " + Mathf.CeilToInt(timeLeft) + "s";
+            }
+
+            UpdateUI();
+        }
+        else if (waveCountText != null)
         {
-            float timeLeft = Mathf.Max(0f, waveCooldown - waveTimer);  // Temps restant avant la vague
-            waveCountText.text = "Wave " + currentWave + " in " + Mathf.CeilToInt(timeLeft) + "s";
+            waveCountText.text = "Click to place the Base"; // N'affiche rien tant que la base n'est pas posée
         }
-
-        // Mettre à jour l'UI
-        UpdateUI();
     }
-}
-
-
 
 
     public void AddScore(int points)
@@ -104,6 +105,34 @@ private void Update()
             // (Cela pourrait être une fonction qui change les paramètres du jeu selon la vague)
 
             // Tu peux aussi ajouter des événements comme une augmentation de la difficulté ou un délai avant la prochaine vague
+            GameObject baseGO = GameObject.FindGameObjectWithTag("Base"); // Trouve la base
+                if (baseGO == null)
+                {
+                    Debug.LogWarning("Base introuvable pour le spawn des ennemis.");
+                    return;
+                }
+
+                Base baseScript = baseGO.GetComponent<Base>();
+                if (baseScript == null || baseScript.enemyPrefab == null)
+                {
+                    Debug.LogWarning("Composant Base ou prefab ennemi manquant.");
+                    return;
+                }
+
+                int enemiesToSpawn = 1 + (currentWave - 1) * 2;
+
+                for (int i = 0; i < enemiesToSpawn; i++)
+                {
+                    Vector2 randomCircle = Random.insideUnitCircle.normalized * baseScript.spawnRadius;
+                    Vector3 spawnPosition = baseGO.transform.position + new Vector3(randomCircle.x, 0, randomCircle.y);
+
+                    GameObject enemyGO = Instantiate(baseScript.enemyPrefab, spawnPosition, Quaternion.identity);
+                    Enemy enemy = enemyGO.GetComponent<Enemy>();
+                    if (enemy != null)
+                    {
+                        enemy.Initialize(baseGO);
+                    }
+                }
         }
     }
 

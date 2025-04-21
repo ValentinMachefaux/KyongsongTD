@@ -7,21 +7,21 @@ namespace Script
     public class Base : MonoBehaviour
     {
         public float health = 100f;
-        public float startDelay = 10f;
-        public bool isBasePlaced = false;
+        public float startDelay = 0f;
+        public static bool isBasePlaced = false;
         public TMPro.TMP_Text countdownText;  // Texte du compte à rebours avant la vague
         private float countdownTimer;
         
         public GameObject enemyPrefab;
         public Transform baseTarget;
-        public float spawnRadius = 5f;
+        public float spawnRadius = 1f;
         public float spawnInterval = 3f;
 
         private float timer;
 
         void Start()
         {
-            countdownTimer = startDelay;  // Initialisation du délai avant le spawn
+            countdownTimer = startDelay;  
         }
 
         void Update()
@@ -38,7 +38,7 @@ namespace Script
                 if (countdownTimer <= 0f)
                 {
                     isBasePlaced = true;
-
+                    
                     if (countdownText != null)
                     {
                         countdownText.gameObject.SetActive(false); // Cacher le texte du compte à rebours
@@ -47,29 +47,13 @@ namespace Script
                     {
                         Debug.LogWarning("countdownText is not assigned!"); // Avertissement si countdownText est null
                     }
-
-                    if (GameManager.Instance != null)
-                    {
-                        GameManager.Instance.StartNextWave();  // Démarre les vagues
-                    }
-                    else
-                    {
-                        Debug.LogError("GameManager.Instance is null! Make sure the GameManager is properly initialized.");
-                    }
                 }
                 return; 
             }
 
-            // Après la pose de la base, commence les vagues
-            timer += Time.deltaTime;
-            if (timer >= spawnInterval)
-            {
-                SpawnEnemy();  // Spawner un ennemi
-                timer = 0f;
-            }
         }
 
-        
+
         public void TakeDamage(float amount)
         {
             Debug.Log("Vie restante : " + health);
@@ -83,40 +67,10 @@ namespace Script
         
         private void Die()
         {
-
             // Détruire la base
             SceneManager.LoadScene(2);
             Destroy(gameObject);  // Détruire l'objet lorsque la base n'a plus de points de vie
         }
 
-        void SpawnEnemy()
-        {
-            if (enemyPrefab == null)
-            {
-                Debug.LogWarning("EnemyPrefab non assigné.");
-                return;
-            }
-
-            // nombre d'ennemis en fonction de la vague
-            int enemiesToSpawn = 1 + (GameManager.Instance.currentWave - 1) * 2;
-
-            for (int i = 0; i < enemiesToSpawn; i++)
-            {
-                // Générer une position aléatoire dans un cercle autour de la base
-                Vector2 randomCircle = Random.insideUnitCircle.normalized * spawnRadius;
-                Vector3 spawnPosition = transform.position + new Vector3(randomCircle.x, 0, randomCircle.y);
-
-                // Créer l'ennemi
-                GameObject enemyGO = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
-
-                // Initialiser l'ennemi
-                Enemy enemy = enemyGO.GetComponent<Enemy>();
-                if (enemy != null)
-                {
-                    enemy.Initialize(this.gameObject);  // Lier l'ennemi à la base
-                }
-            }
-
-        }
     }
 }
