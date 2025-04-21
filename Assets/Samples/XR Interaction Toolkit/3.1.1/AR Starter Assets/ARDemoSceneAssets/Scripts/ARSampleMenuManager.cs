@@ -18,7 +18,13 @@ namespace UnityEngine.XR.Interaction.Toolkit.Samples.ARStarterAssets
         [SerializeField]
         [Tooltip("Button that opens the create menu.")]
         Button m_CreateButton;
+        
+        [SerializeField]
+        private Button[] m_SpawnButtons;  // Liste de boutons
 
+        [SerializeField]
+        private Text[] m_ButtonTexts; 
+        
         /// <summary>
         /// Button that opens the create menu.
         /// </summary>
@@ -179,9 +185,10 @@ namespace UnityEngine.XR.Interaction.Toolkit.Samples.ARStarterAssets
             }
             else
             {
-                if (objectIndex < m_ObjectSpawner.objectPrefabs.Count)
+                if (objectIndex < m_ObjectSpawner.m_PrefabsWithMaxCount.Count) // Vérification modifiée
                 {
                     m_ObjectSpawner.spawnOptionIndex = objectIndex;
+                    UpdateButtonText(); 
                 }
                 else
                 {
@@ -191,7 +198,7 @@ namespace UnityEngine.XR.Interaction.Toolkit.Samples.ARStarterAssets
 
             HideMenu();
         }
-
+        
         void ShowMenu()
         {
             m_ShowObjectMenu = true;
@@ -220,6 +227,30 @@ namespace UnityEngine.XR.Interaction.Toolkit.Samples.ARStarterAssets
             if (currentFocusedObject != null)
             {
                 Destroy(currentFocusedObject.transform.gameObject);
+            }
+        }
+        
+        void UpdateButtonText()
+        {
+            for (int i = 0; i < m_SpawnButtons.Length; i++)
+            {
+                // Récupérer le prefab à associer au bouton
+                var prefabWithMaxCount = m_ObjectSpawner.m_PrefabsWithMaxCount[i];
+                int maxCount = prefabWithMaxCount.maxCount;
+
+                // Calculer combien d'objets ont déjà été instanciés
+                int remainingCount = maxCount;
+                if (m_ObjectSpawner.m_InstantiatedObjectsCount.ContainsKey(prefabWithMaxCount.prefab))
+                {
+                    remainingCount = maxCount - m_ObjectSpawner.m_InstantiatedObjectsCount[prefabWithMaxCount.prefab];
+                }
+
+                // Mettre à jour le texte du bouton
+                Text buttonText = m_ButtonTexts[i];  // Accède au texte du bouton associé
+                if (buttonText != null)
+                {
+                    buttonText.text = $"{remainingCount} / {maxCount}";
+                }
             }
         }
     }
