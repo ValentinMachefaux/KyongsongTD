@@ -315,7 +315,7 @@ public class ARTemplateMenuManager : MonoBehaviour
         }
         else
         {
-            if (m_ObjectSpawner.objectPrefabs.Count > objectIndex)
+            if (objectIndex < m_ObjectSpawner.m_PrefabsWithMaxCount.Count)
             {
                 m_ObjectSpawner.spawnOptionIndex = objectIndex;
             }
