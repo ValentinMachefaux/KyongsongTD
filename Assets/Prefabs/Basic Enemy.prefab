@@ -301,7 +301,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: abb4c6cc0ddda73469dbb5e415646646,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.132
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: abb4c6cc0ddda73469dbb5e415646646,
         type: 3}
@@ -429,7 +429,8 @@ MonoBehaviour:
   firePoint: {fileID: 2888196917669150310}
   damage: 1
   shootCooldown: 1
-  damageSound: {fileID: 8300000, guid: df49b801e24076a4d980c0ad52b43374, type: 3}
+  isAlreadyHit: 0
+  hitCooldown: 1
 --- !u!54 &4086055976986155133
 Rigidbody:
   m_ObjectHideFlags: 0

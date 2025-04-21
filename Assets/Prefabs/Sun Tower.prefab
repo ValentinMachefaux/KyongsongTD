@@ -232,10 +232,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1704526004725274764}
+  - component: {fileID: 9102075149079594152}
   - component: {fileID: 1369172052935452910}
   - component: {fileID: 8645238740392963755}
   - component: {fileID: 4054654146784012377}
-  - component: {fileID: 9102075149079594152}
   m_Layer: 0
   m_Name: Sun Tower
   m_TagString: Tower
@@ -252,7 +252,7 @@ Transform:
   m_GameObject: {fileID: 8872151941456745824}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.9, y: 0.9, z: 0.9}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -260,6 +260,25 @@ Transform:
   - {fileID: 5413522548667927984}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9102075149079594152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8872151941456745824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 854e0cd091f6ceb46b5e17ee1c8db40c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 10
+  rotationSpeed: 2
+  projectilePrefab: {fileID: 7632041053408522697, guid: 478162d750417dc4fa7a80d17c738cb0,
+    type: 3}
+  firePoint: {fileID: 5413522548667927984}
+  damage: 2
+  shootCooldown: 2
 --- !u!135 &1369172052935452910
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -279,7 +298,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 2
+  m_Radius: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &8645238740392963755
 Rigidbody:
@@ -303,8 +322,8 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
+  m_UseGravity: 1
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -331,22 +350,3 @@ CapsuleCollider:
   m_Height: 0.18
   m_Direction: 1
   m_Center: {x: 0, y: 0.06, z: 0}
---- !u!114 &9102075149079594152
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8872151941456745824}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 854e0cd091f6ceb46b5e17ee1c8db40c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: 10
-  rotationSpeed: 2
-  projectilePrefab: {fileID: 7632041053408522697, guid: 478162d750417dc4fa7a80d17c738cb0,
-    type: 3}
-  firePoint: {fileID: 5413522548667927984}
-  damage: 2
-  shootCooldown: 1

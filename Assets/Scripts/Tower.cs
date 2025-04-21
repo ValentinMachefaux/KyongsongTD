@@ -40,6 +40,8 @@ public class Tower : MonoBehaviour
 
     public void TakeDamage(float amount)
     {
+        Debug.Log($"Tower taking damage {amount}, {health} left");
+        
         if (health <= 0f)
         {
             Die();
@@ -73,9 +75,9 @@ public class Tower : MonoBehaviour
         Fireball fireball = projectileGO.GetComponent<Fireball>();
         if (fireball != null)
         {
-            // Assigner la cible et les dégâts à la Fireball
-            fireball.targetPosition = attackTarget.position;  // La position de l'ennemi ou de la cible
-            fireball.damage = damage;                         // Les dégâts de la tour
+            fireball.targetPosition = attackTarget.position;
+            fireball.damage = damage;
+            fireball.shooterTag = gameObject.tag; 
         }
         else
         {

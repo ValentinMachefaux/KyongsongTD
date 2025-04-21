@@ -3,84 +3,107 @@ using UnityEngine;
 
 public class Fireball : MonoBehaviour
 {
-    public Vector3 targetPosition;              // Cible de la boule de feu
-    public float fallSpeed = 20f;               // Vitesse de la chute
-    public float explosionRadius = 5f;          // Rayon d'explosion
-    public float damage = 20f;                  // Dégâts infligés
-    public float explosionHeightOffset = 10f;   // Hauteur de départ
+    public Vector3 targetPosition;  // Position de la cible
+    public float damage = 2f;       // Dégâts de la boule de feu
+    public float speed = 0.5f;        // Vitesse de la boule de feu
+    public string shooterTag;        // Tag du tireur (qui peut être "Tower" ou "Enemy")
+    public float lifetime = 1f;      // Durée de vie de la boule de feu avant qu'elle disparaisse
+    public float effectDamageRadius = 1f;    
 
-    public AudioClip impactSound;               // Son d'impact
-    public AudioSource audioSourcePrefab;       // Prefab audio source
+    public GameObject explosionEffectPrefab;  // Effet d'explosion
+    public AudioClip impactSound;             // Son d'impact
+    public AudioSource audioSourcePrefab;     // Source audio pour l'impact
+    public GameObject trailEffectPrefab;      // Effet de traînée
 
-    private bool hasExploded = false;           // Si la boule de feu a explosé
-    private TrailRenderer trailRenderer;        // Pour gérer la traînée
-    private GameObject trailObject;             // Objet de la traînée
-    private GameObject explosionObject;         // Objet de l'explosion
+    private bool hasExploded = false;         // Si la boule a explosé ou non
+    private Vector3 direction;                // Direction vers la cible
+    private float trailDuration = 0.2f;         // Durée de la traînée de la boule de feu
+    private float offsetY = 0.5f;         // Durée de la traînée de la boule de feu
 
     void Start()
     {
-        // Initialiser la position de la boule de feu
-        transform.position = new Vector3(targetPosition.x, targetPosition.y + explosionHeightOffset, targetPosition.z);
+        // Positionner la Fireball 5 unités au-dessus de la cible
+        transform.position = targetPosition + new Vector3(0, offsetY, 0);
 
-        // Créer les effets de traînée et d'explosion
-        CreateTrailEffect();
+        // Calculer la direction vers la cible
+        direction = (targetPosition - transform.position).normalized;
+
+        // Ajouter un effet de traînée
+        if (trailEffectPrefab != null)
+        {
+            Instantiate(trailEffectPrefab, transform.position, Quaternion.identity);
+        }
+
+        Destroy(gameObject, lifetime);  // Détruire la Fireball après un certain temps
     }
 
     void Update()
     {
-        // Déplacer la boule de feu vers la cible
-        transform.position = Vector3.MoveTowards(transform.position, targetPosition, fallSpeed * Time.deltaTime);
-
-        // Déclencher l'explosion à l'impact
-        if (!hasExploded && Vector3.Distance(transform.position, targetPosition) < 0.1f)
+        if (!hasExploded)
         {
-            Explode();
+            // Déplacement de la Fireball vers la cible
+            transform.position += direction * speed * Time.deltaTime;
+
+            // Vérifier si la Fireball est arrivée à la position cible
+            if (Vector3.Distance(transform.position, targetPosition) < 0.1f)
+            {
+                Explode();
+            }
         }
     }
 
     void Explode()
     {
+        if (hasExploded) return;
         hasExploded = true;
 
         // Créer l'effet d'explosion
-        CreateExplosionEffect();
+        if (explosionEffectPrefab != null)
+        {
+            Instantiate(explosionEffectPrefab, transform.position, Quaternion.identity);
+        }
+
+        // Appliquer les dégâts de zone
+        ApplyAreaOfEffectDamage();
+
+        // Jouer le son d'impact
         PlayImpactSound();
 
-        // Appliquer des dégâts en fonction des tags (allié ou ennemi)
-        Collider[] hits = Physics.OverlapSphere(transform.position, explosionRadius);
-        foreach (Collider hit in hits)
+        // Détruire la Fireball après l'explosion
+        Destroy(gameObject);
+    }
+
+    void ApplyAreaOfEffectDamage()
+    {
+        // Zone d'effet : Détecter les objets dans une certaine portée de l'impact
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, effectDamageRadius);  // Portée de l'explosion
+        foreach (var hitCollider in hitColliders)
         {
-            // Si l'objet est un ennemi, on applique les dégâts
-            if (hit.CompareTag("Enemy"))
+            // Si l'objet est un ennemi et que la Fireball a été lancée par une tour
+            if (hitCollider.CompareTag("Enemy") && shooterTag == "Tower")
             {
-                Enemy enemy = hit.GetComponent<Enemy>();
-                if (enemy != null)
+                var enemy = hitCollider.GetComponent<Enemy>();
+                if (enemy != null && !enemy.GetComponent<Enemy>().isAlreadyHit)  // Vérifier si l'ennemi n'a pas déjà été touché
                 {
-                    enemy.TakeDamage(damage);  // Appliquer des dégâts aux ennemis
+                    enemy.TakeDamage(damage);
+                    enemy.GetComponent<Enemy>().isAlreadyHit = true;  // Marquer l'ennemi comme touché
                 }
             }
-            // Si l'objet est une tour, on applique les dégâts à la tour
-            else if (hit.CompareTag("Tower"))
+            // Si la Fireball est lancée par un ennemi, elle touche seulement les tours ou bases
+            else if ((hitCollider.CompareTag("Tower") || hitCollider.CompareTag("Base")) && shooterTag == "Enemy")
             {
-                Tower tower = hit.GetComponent<Tower>();
+                var tower = hitCollider.GetComponent<Tower>();
+                var baseObject = hitCollider.GetComponent<Base>();
                 if (tower != null)
                 {
-                    tower.TakeDamage(damage);  // Appliquer des dégâts à la tour
+                    tower.TakeDamage(damage);
                 }
-            }
-            // Si l'objet est la base, on applique des dégâts à la base
-            else if (hit.CompareTag("Base"))
-            {
-                Base baseObj = hit.GetComponent<Base>();
-                if (baseObj != null)
+                if (baseObject != null)
                 {
-                    baseObj.TakeDamage(damage);  // Appliquer des dégâts à la base
+                    baseObject.TakeDamage(damage);
                 }
             }
         }
-
-        // Détruire la boule de feu après l'explosion
-        Destroy(gameObject);
     }
 
     void PlayImpactSound()
@@ -90,60 +113,7 @@ public class Fireball : MonoBehaviour
             AudioSource tempAudio = Instantiate(audioSourcePrefab, transform.position, Quaternion.identity);
             tempAudio.clip = impactSound;
             tempAudio.Play();
-            Destroy(tempAudio.gameObject, impactSound.length);
+            Destroy(tempAudio.gameObject, impactSound.length); // Supprimer le son après qu'il a joué
         }
-    }
-
-    // Méthode pour créer l'effet de traînée
-    void CreateTrailEffect()
-    {
-        trailObject = new GameObject("TrailEffect");
-        trailObject.transform.parent = transform;  // Attacher la traînée à la boule de feu
-
-        // Créer un TrailRenderer pour la traînée
-        trailRenderer = trailObject.AddComponent<TrailRenderer>();
-        trailRenderer.startWidth = explosionRadius * 0.05f;  // Largeur initiale de la traînée (proportionnelle au rayon)
-        trailRenderer.endWidth = explosionRadius * 0.02f;   // Largeur finale de la traînée
-        trailRenderer.time = 0.5f;  // Durée de la traînée
-
-        // Appliquer un matériau de base pour la traînée (peut être remplacé par un matériau de feu)
-        trailRenderer.material = new Material(Shader.Find("Sprites/Default"));
-        trailRenderer.startColor = Color.red;  // Couleur de la traînée (rouge pour un effet de feu)
-        trailRenderer.endColor = Color.yellow; // Couleur finale de la traînée (jaune pour simuler le feu qui s'estompe)
-    }
-
-    // Méthode pour créer l'effet d'explosion
-    void CreateExplosionEffect()
-    {
-        // Créer l'objet de l'explosion
-        explosionObject = new GameObject("ExplosionEffect");
-        explosionObject.transform.position = transform.position;  // Placer l'explosion à la position de la boule de feu
-
-        // Créer un ParticleSystem pour l'explosion
-        ParticleSystem explosionSystem = explosionObject.AddComponent<ParticleSystem>();
-
-        // Paramètres du ParticleSystem
-        var mainModule = explosionSystem.main;
-        mainModule.startSize = explosionRadius * 0.2f;  // Taille des particules (proportionnelle au rayon d'explosion)
-        mainModule.startSpeed = explosionRadius * 0.3f;  // Vitesse des particules
-        mainModule.startLifetime = 0.5f;                 // Durée de vie des particules
-        mainModule.startColor = new Color(1f, 0.5f, 0f); // Couleur (orange/rouge pour un effet de feu)
-
-        // Module d'émission
-        var emissionModule = explosionSystem.emission;
-        emissionModule.rateOverTime = explosionRadius * 10f; // Nombre de particules émises en fonction du rayon
-
-        // Lancer l'explosion
-        explosionSystem.Play();
-
-        // Détruire l'objet d'explosion après un court délai pour libérer les ressources
-        Destroy(explosionObject, 1f);  // Détruire l'explosion après 1 seconde pour qu'elle soit visible
-    }
-
-    // Méthode de visualisation du rayon d'explosion dans l'éditeur
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, explosionRadius);
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -71,13 +72,32 @@ public class Enemy : MonoBehaviour
             target = targetObject.transform;
     }
     
+    public bool isAlreadyHit = false;  // Nouveau drapeau pour savoir si l'ennemi a déjà été touché
+    public float hitCooldown = 1f;     // Délai avant que l'ennemi puisse être touché à nouveau (en secondes)
+
     public void TakeDamage(float amount)
     {
+        Debug.Log($"Enemy taking damage {amount}, {health} left");
+        if (!isAlreadyHit)  // Si l'ennemi n'a pas encore été touché
+        {
+            health -= amount;
+            isAlreadyHit = true;  // L'ennemi est maintenant marqué comme touché
+
+            // Démarre une coroutine pour réinitialiser le drapeau après un délai
+            StartCoroutine(ResetHitCooldown());
+        }
+
         if (health <= 0f)
         {
             Die();
         }
-        health -= amount;
+    }
+
+    IEnumerator ResetHitCooldown()
+    {
+        // Attendre la durée du cooldown avant de permettre à l'ennemi d'être touché à nouveau
+        yield return new WaitForSeconds(hitCooldown);
+        isAlreadyHit = false;  // Réinitialiser le drapeau après le délai
     }
         
     private void Die()
@@ -115,8 +135,6 @@ public class Enemy : MonoBehaviour
     protected void Shoot()
     {
         if (attackTarget == null) return;
-
-        // Debug.Log("Tir déclenché sur : " + attackTarget.name);
 
         GameObject projectileGO = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
 
