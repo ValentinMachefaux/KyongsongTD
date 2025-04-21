@@ -7,6 +7,9 @@ TagManager:
   - Base
   - Undefined
   - Enemy
+  - Projectile
+  - Tower
+  - Countdown
   layers:
   - Default
   - TransparentFX

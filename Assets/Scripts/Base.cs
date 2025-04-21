@@ -75,34 +75,34 @@ namespace Script
             Destroy(gameObject);  // Détruire l'objet lorsque la base n'a plus de points de vie
         }
 
-        // void SpawnEnemy()
-        // {
-        //     if (enemyPrefab == null)
-        //     {
-        //         Debug.LogWarning("EnemyPrefab non assigné.");
-        //         return;
-        //     }
+        void SpawnEnemy()
+        {
+            if (enemyPrefab == null)
+            {
+                Debug.LogWarning("EnemyPrefab non assigné.");
+                return;
+            }
 
-        //     // nombre d'ennemis en fonction de la vague
-        //     int enemiesToSpawn = 1 + (GameManager.Instance.currentWave - 1) * 2;
+            // nombre d'ennemis en fonction de la vague
+            int enemiesToSpawn = 1 + (GameManager.Instance.currentWave - 1) * 2;
 
-        //     for (int i = 0; i < enemiesToSpawn; i++)
-        //     {
-        //         // Générer une position aléatoire dans un cercle autour de la base
-        //         Vector2 randomCircle = Random.insideUnitCircle.normalized * spawnRadius;
-        //         Vector3 spawnPosition = transform.position + new Vector3(randomCircle.x, 0, randomCircle.y);
+            for (int i = 0; i < enemiesToSpawn; i++)
+            {
+                // Générer une position aléatoire dans un cercle autour de la base
+                Vector2 randomCircle = Random.insideUnitCircle.normalized * spawnRadius;
+                Vector3 spawnPosition = transform.position + new Vector3(randomCircle.x, 0, randomCircle.y);
 
-        //         // Créer l'ennemi
-        //         GameObject enemyGO = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
+                // Créer l'ennemi
+                GameObject enemyGO = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
 
-        //         // Initialiser l'ennemi
-        //         Enemy enemy = enemyGO.GetComponent<Enemy>();
-        //         if (enemy != null)
-        //         {
-        //             enemy.Initialize(this.gameObject);  // Lier l'ennemi à la base
-        //         }
-        //     }
+                // Initialiser l'ennemi
+                Enemy enemy = enemyGO.GetComponent<Enemy>();
+                if (enemy != null)
+                {
+                    enemy.Initialize(this.gameObject);  // Lier l'ennemi à la base
+                }
+            }
 
-        // }
+        }
     }
 }
