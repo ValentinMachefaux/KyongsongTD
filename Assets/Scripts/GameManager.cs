@@ -1,23 +1,27 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;  // Pour gérer les scènes
 using TMPro;
+using Script;
 
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;  // Instance unique pour le Singleton
 
+    private Base playerBase;
+
     public int score = 0; 
     public int currentWave = 1;
     public int currentLevel = 1; 
-    public int scoreToNextLevel = 100;  // Score requis pour passer au niveau suivant
+    public int scoreToNextLevel = 100;
 
-    public float waveCooldown = 5f;  // Délai entre les vagues (en secondes)
+    public float waveCooldown = 20f;
     private float waveTimer = 0f;
+    public TMP_Text waveCountText; 
 
-    public bool isGameOver = false;  // Si le jeu est terminé ou non
+    public bool isGameOver = false;
 
-    // UI Elements (par exemple, pour afficher le score, le niveau et les vagues)
+    // UI Elements (pour afficher le score etc)
     public TMP_Text scoreText;
     public TMP_Text levelText;
     public TMP_Text waveText;
@@ -37,25 +41,36 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void Update()
+
+private void Update()
+{
+    // Si le jeu n'est pas terminé, gérer la progression des vagues
+    if (!isGameOver)
     {
-        // Si le jeu n'est pas terminé, gérer la progression des vagues
-        if (!isGameOver)
+        waveTimer += Time.deltaTime;  // Compter le temps écoulé
+
+        // Vérifie si le cooldown est écoulé et lance la prochaine vague
+        if (waveTimer >= waveCooldown)
         {
-            waveTimer += Time.deltaTime;
-
-            if (waveTimer >= waveCooldown)
-            {
-                StartNextWave();  // Lancer la vague suivante
-                waveTimer = 0f;   // Réinitialiser le timer
-            }
-
-            // Mise à jour de l'UI
-            UpdateUI();
+            StartNextWave();  // Lancer la vague suivante
+            waveTimer = 0f;   // Réinitialiser le timer
         }
-    }
 
-    // Méthode pour ajouter des points
+        // Afficher le compte à rebours avant la vague suivante
+        if (waveCountText != null)
+        {
+            float timeLeft = Mathf.Max(0f, waveCooldown - waveTimer);  // Temps restant avant la vague
+            waveCountText.text = "Wave " + currentWave + " in " + Mathf.CeilToInt(timeLeft) + "s";
+        }
+
+        // Mettre à jour l'UI
+        UpdateUI();
+    }
+}
+
+
+
+
     public void AddScore(int points)
     {
         if (!isGameOver)
@@ -63,7 +78,7 @@ public class GameManager : MonoBehaviour
             score += points;
             if (score >= scoreToNextLevel)
             {
-                LevelUp();  // Passer au niveau suivant
+                LevelUp();
             }
         }
     }
@@ -74,30 +89,31 @@ public class GameManager : MonoBehaviour
         currentLevel++;
         scoreToNextLevel += 100;  // Augmenter le score requis pour le prochain niveau
 
-        // Afficher un message (peut être amélioré avec une animation ou une UI)
         Debug.Log("Niveau " + currentLevel + " atteint !");
     }
 
     // Méthode pour démarrer la prochaine vague
-    private void StartNextWave()
+    public void StartNextWave()
     {
-        currentWave++;
-        Debug.Log("Vague " + currentWave + " commencée !");
+        if (!isGameOver)
+        {
+            currentWave++;
+            Debug.Log("Vague " + currentWave + " commencée !");
 
-        // Augmenter la difficulté, par exemple, augmenter le nombre d'ennemis ou leur vitesse
-        // (Cela pourrait être une fonction qui change les paramètres du jeu selon la vague)
+            // Augmenter la difficulté, par exemple, augmenter le nombre d'ennemis ou leur vitesse
+            // (Cela pourrait être une fonction qui change les paramètres du jeu selon la vague)
 
-        // Tu peux aussi ajouter des événements comme une augmentation de la difficulté ou un délai avant la prochaine vague
+            // Tu peux aussi ajouter des événements comme une augmentation de la difficulté ou un délai avant la prochaine vague
+        }
     }
 
     // Méthode pour finir le jeu
     public void GameOver()
     {
         isGameOver = true;
-        gameOverText.gameObject.SetActive(true);  // Afficher un message de game over
+        gameOverText.gameObject.SetActive(true);
     }
 
-    // Méthode pour réinitialiser le jeu (par exemple, après un game over)
     public void RestartGame()
     {
         score = 0;
@@ -116,10 +132,10 @@ public class GameManager : MonoBehaviour
             scoreText.text = "Score: " + score;
 
         if (levelText != null)
-            levelText.text = "Niveau: " + currentLevel;
+            levelText.text = "Level : " + currentLevel;
 
         if (waveText != null)
-            waveText.text = "Vague: " + currentWave;
+            waveText.text = "Wave : " + currentWave;
 
         if (gameOverText != null && isGameOver)
             gameOverText.text = "GAME OVER!";
