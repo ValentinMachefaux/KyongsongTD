@@ -46,32 +46,35 @@ public class Fireball : MonoBehaviour
         CreateExplosionEffect();
         PlayImpactSound();
 
-        // Appliquer des dégâts
+        // Appliquer des dégâts en fonction des tags (allié ou ennemi)
         Collider[] hits = Physics.OverlapSphere(transform.position, explosionRadius);
         foreach (Collider hit in hits)
         {
+            // Si l'objet est un ennemi, on applique les dégâts
             if (hit.CompareTag("Enemy"))
             {
                 Enemy enemy = hit.GetComponent<Enemy>();
                 if (enemy != null)
                 {
-                    enemy.TakeDamage(damage); // Appliquer des dégâts aux ennemis
+                    enemy.TakeDamage(damage);  // Appliquer des dégâts aux ennemis
                 }
             }
+            // Si l'objet est une tour, on applique les dégâts à la tour
             else if (hit.CompareTag("Tower"))
             {
                 Tower tower = hit.GetComponent<Tower>();
                 if (tower != null)
                 {
-                    tower.TakeDamage(damage); // Appliquer des dégâts à la tour
+                    tower.TakeDamage(damage);  // Appliquer des dégâts à la tour
                 }
             }
+            // Si l'objet est la base, on applique des dégâts à la base
             else if (hit.CompareTag("Base"))
             {
                 Base baseObj = hit.GetComponent<Base>();
                 if (baseObj != null)
                 {
-                    baseObj.TakeDamage(damage); // Appliquer des dégâts à la base
+                    baseObj.TakeDamage(damage);  // Appliquer des dégâts à la base
                 }
             }
         }

@@ -58,30 +58,35 @@ public class Tower : MonoBehaviour
 
         Debug.Log("Tir déclenché sur : " + attackTarget.name);
 
+        // Créer le projectile (ici, une Fireball)
         GameObject projectileGO = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
 
+        // Gérer les collisions entre la tour et le projectile
         Collider myCollider = GetComponent<Collider>();
         Collider projectileCollider = projectileGO.GetComponent<Collider>();
         if (myCollider != null && projectileCollider != null)
         {
-            Physics.IgnoreCollision(projectileCollider, myCollider);
+            Physics.IgnoreCollision(projectileCollider, myCollider);  // Ignorer la collision avec la tour
         }
 
-        Projectile projectile = projectileGO.GetComponent<Projectile>();
-        if (projectile != null)
-        {
-            projectile.target = attackTarget;
-            projectile.damage = damage;
-            projectile.shooterTag = gameObject.tag; // Définir le tag du tireur
-        }
-        
-        // Si c'est une boule de feu
+        // Vérifier si le projectile est une Fireball
         Fireball fireball = projectileGO.GetComponent<Fireball>();
         if (fireball != null)
         {
-            fireball.targetPosition = attackTarget.position;
-            fireball.damage = damage;
-            fireball.shooterTag = gameObject.tag;
+            // Assigner la cible et les dégâts à la Fireball
+            fireball.targetPosition = attackTarget.position;  // La position de l'ennemi ou de la cible
+            fireball.damage = damage;                         // Les dégâts de la tour
+        }
+        else
+        {
+            // Si ce n'est pas une Fireball, gérer les autres types de projectiles (par exemple, un Projectile générique)
+            Projectile projectile = projectileGO.GetComponent<Projectile>();
+            if (projectile != null)
+            {
+                projectile.target = attackTarget;
+                projectile.damage = damage;
+                projectile.shooterTag = gameObject.tag;  // Le tag du tireur
+            }
         }
     }
 

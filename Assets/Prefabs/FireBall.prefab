@@ -48,12 +48,7 @@ MonoBehaviour:
   fallSpeed: 3
   explosionRadius: 0.2
   damage: 2
-  explosionHeightOffset: 0
+  explosionHeightOffset: 1
   impactSound: {fileID: 8300000, guid: 090be60fda18ed54c9b78f8146972eb3, type: 3}
   audioSourcePrefab: {fileID: 2834085959377088795, guid: 14cdcd2ce8517bd4581c905187ed8268,
-    type: 3}
-  shooterTag: 
-  trailEffectPrefab: {fileID: 587304352709483254, guid: 24931720cfda08647bc67b0806b418ec,
-    type: 3}
-  explosionEffectPrefab: {fileID: 2490413742755641926, guid: c5098eab8652fbb49b623d0caac696d5,
     type: 3}
