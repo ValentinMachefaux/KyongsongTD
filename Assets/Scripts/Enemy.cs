@@ -77,11 +77,8 @@ public class Enemy : MonoBehaviour
     public void TakeDamage(float amount)
     {
         Debug.Log($"Enemy taking damage {amount}, {health} left");
-        if (!isAlreadyHit)  // Si l'ennemi n'a pas encore été touché
-        {
-            health -= amount;
-            isAlreadyHit = true;  // L'ennemi est maintenant marqué comme touché
-        }
+        
+        health -= amount;
 
         if (health <= 0f)
         {

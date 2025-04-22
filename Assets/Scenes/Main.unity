@@ -715,6 +715,11 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0.3003468
       objectReference: {fileID: 0}
+    - target: {fileID: 2512387469002778309, guid: 48cb3fb68c91eb94999fd99957eb0cae,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2512387469002778328, guid: 48cb3fb68c91eb94999fd99957eb0cae,
         type: 3}
       propertyPath: m_Enabled
@@ -723,7 +728,7 @@ PrefabInstance:
     - target: {fileID: 2512387469002778331, guid: 48cb3fb68c91eb94999fd99957eb0cae,
         type: 3}
       propertyPath: m_ClearFlags
-      value: 4
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2512387469002778331, guid: 48cb3fb68c91eb94999fd99957eb0cae,
         type: 3}
@@ -734,6 +739,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_FOVAxisMode
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2512387469002778331, guid: 48cb3fb68c91eb94999fd99957eb0cae,
+        type: 3}
+      propertyPath: m_OcclusionCulling
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2512387470319625119, guid: 48cb3fb68c91eb94999fd99957eb0cae,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2512387470528047719, guid: 48cb3fb68c91eb94999fd99957eb0cae,
         type: 3}
@@ -804,6 +819,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_CameraYOffset
       value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 2512387470890420964, guid: 48cb3fb68c91eb94999fd99957eb0cae,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1192,7 +1212,7 @@ MonoBehaviour:
     maxCount: 1
   - prefab: {fileID: 2194499123883832588, guid: eacadd025fffaa14f8ad6fc23db1b719,
       type: 3}
-    maxCount: 4
+    maxCount: 8
   - prefab: {fileID: 8872151941456745824, guid: 4dd429f9ed6295049a8b32d2b1a8d273,
       type: 3}
     maxCount: 2
@@ -2683,8 +2703,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: SceneController, Assembly-CSharp
+      - m_Target: {fileID: 2099970470}
+        m_TargetAssemblyTypeName: UnityEngine.XR.Interaction.Toolkit.Samples.ARStarterAssets.ARSampleMenuManager,
+          Unity.XR.Interaction.Toolkit.Samples.ARStarterAssets
         m_MethodName: LoadScene
         m_Mode: 3
         m_Arguments:
@@ -2694,7 +2715,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 1
 --- !u!114 &1328805429
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4237,7 +4258,7 @@ PrefabInstance:
     - target: {fileID: 1067946909681450993, guid: a8522fe39eb57864bb42883d51d014d2,
         type: 3}
       propertyPath: waveCooldown
-      value: 30
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 1067946909681450993, guid: a8522fe39eb57864bb42883d51d014d2,
         type: 3}
