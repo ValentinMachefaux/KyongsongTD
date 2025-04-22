@@ -1,5 +1,6 @@
 #if AR_FOUNDATION_PRESENT
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.XR.Interaction.Toolkit.AR.Inputs;
 using UnityEngine.XR.Interaction.Toolkit.Inputs.Readers;
@@ -228,6 +229,11 @@ namespace UnityEngine.XR.Interaction.Toolkit.Samples.ARStarterAssets
             {
                 Destroy(currentFocusedObject.transform.gameObject);
             }
+        }
+        
+        public void LoadScene(int index)
+        {
+            SceneManager.LoadScene(index);
         }
         
         void UpdateButtonText()

@@ -73,7 +73,6 @@ public class Enemy : MonoBehaviour
     }
     
     public bool isAlreadyHit = false;  // Nouveau drapeau pour savoir si l'ennemi a déjà été touché
-    public float hitCooldown = 1f;     // Délai avant que l'ennemi puisse être touché à nouveau (en secondes)
 
     public void TakeDamage(float amount)
     {
@@ -82,22 +81,12 @@ public class Enemy : MonoBehaviour
         {
             health -= amount;
             isAlreadyHit = true;  // L'ennemi est maintenant marqué comme touché
-
-            // Démarre une coroutine pour réinitialiser le drapeau après un délai
-            StartCoroutine(ResetHitCooldown());
         }
 
         if (health <= 0f)
         {
             Die();
         }
-    }
-
-    IEnumerator ResetHitCooldown()
-    {
-        // Attendre la durée du cooldown avant de permettre à l'ennemi d'être touché à nouveau
-        yield return new WaitForSeconds(hitCooldown);
-        isAlreadyHit = false;  // Réinitialiser le drapeau après le délai
     }
         
     private void Die()

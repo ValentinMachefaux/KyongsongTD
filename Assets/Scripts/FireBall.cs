@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using Script;
 using UnityEngine;
 
@@ -76,32 +78,43 @@ public class Fireball : MonoBehaviour
     void ApplyAreaOfEffectDamage()
     {
         // Zone d'effet : Détecter les objets dans une certaine portée de l'impact
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, effectDamageRadius);  // Portée de l'explosion
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, effectDamageRadius);
+        List<Enemy> touchedEnemies = new();
+
         foreach (var hitCollider in hitColliders)
         {
             // Si l'objet est un ennemi et que la Fireball a été lancée par une tour
             if (hitCollider.CompareTag("Enemy") && shooterTag == "Tower")
             {
                 var enemy = hitCollider.GetComponent<Enemy>();
-                if (enemy != null && !enemy.GetComponent<Enemy>().isAlreadyHit)  // Vérifier si l'ennemi n'a pas déjà été touché
+                if (enemy != null && !enemy.isAlreadyHit)
                 {
                     enemy.TakeDamage(damage);
-                    enemy.GetComponent<Enemy>().isAlreadyHit = true;  // Marquer l'ennemi comme touché
+                    enemy.isAlreadyHit = true;
+                    touchedEnemies.Add(enemy);
                 }
             }
-            // Si la Fireball est lancée par un ennemi, elle touche seulement les tours ou bases
+            // Si la Fireball est lancée par un ennemi, elle touche les tours ou bases
             else if ((hitCollider.CompareTag("Tower") || hitCollider.CompareTag("Base")) && shooterTag == "Enemy")
             {
                 var tower = hitCollider.GetComponent<Tower>();
                 var baseObject = hitCollider.GetComponent<Base>();
-                if (tower != null)
-                {
-                    tower.TakeDamage(damage);
-                }
-                if (baseObject != null)
-                {
-                    baseObject.TakeDamage(damage);
-                }
+                if (tower != null) tower.TakeDamage(damage);
+                if (baseObject != null) baseObject.TakeDamage(damage);
+            }
+        }
+
+        StartCoroutine(ResetEnemiesHit(touchedEnemies, 0.2f)); // délai en secondes
+    }
+
+    IEnumerator ResetEnemiesHit(List<Enemy> enemies, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        foreach (var enemy in enemies)
+        {
+            if (enemy != null)
+            {
+                enemy.isAlreadyHit = false;
             }
         }
     }
