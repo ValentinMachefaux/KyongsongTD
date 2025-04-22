@@ -97,7 +97,6 @@ namespace Script
         void Die()
         {
             SceneManager.LoadScene(2); // tu changes de scène
-            Destroy(gameObject);   
         }
     }
 }

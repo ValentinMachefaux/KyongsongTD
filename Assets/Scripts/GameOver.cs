@@ -1,14 +1,10 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameOver : MonoBehaviour
 {
-    public void OnReplayButton()
-    {
-        GameManager.Instance?.ResetGameValues();
-    }
-
     public void OnMenuButton()
     {
-        GameManager.Instance?.GoToMenu();
+        SceneManager.LoadScene(0); 
     }
 }
