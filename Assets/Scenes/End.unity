@@ -769,7 +769,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 822650354}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b018a1441f334754ba8bd1e766ed1e3b, type: 3}
+  m_Script: {fileID: 11500000, guid: 45bc9a5eae3345aca8611c4af17c2d92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &844636609
@@ -1239,9 +1239,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 822650359}
-        m_TargetAssemblyTypeName: SceneController, Assembly-CSharp
-        m_MethodName: LoadScene
-        m_Mode: 3
+        m_TargetAssemblyTypeName: GameOver, Assembly-CSharp
+        m_MethodName: OnMenuButton
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1249,7 +1249,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 1
 --- !u!114 &1422735398
 MonoBehaviour:
   m_ObjectHideFlags: 0

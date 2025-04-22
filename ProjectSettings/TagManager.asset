@@ -10,6 +10,11 @@ TagManager:
   - Projectile
   - Tower
   - Countdown
+  - ScoreText
+  - WaveCountdownText
+  - GameOverText
+  - WaveText
+  - LevelText
   layers:
   - Default
   - TransparentFX

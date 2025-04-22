@@ -1,49 +1,43 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;  // Pour gérer les scènes
+using UnityEngine.SceneManagement;
 using TMPro;
 using Script;
 
-
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance;  // Instance unique pour le Singleton
+    public static GameManager Instance;
 
     private Base playerBase;
 
-    public int score = 0; 
+    public int score = 0;
     public int currentWave = 0;
-    public int currentLevel = 1; 
+    public int currentLevel = 1;
     public int scoreToNextLevel = 100;
 
     public float waveCooldown = 30f;
     private float waveTimer = 0f;
-    public TMP_Text waveCountText; 
 
+    public TMP_Text waveCountText;
     public bool isGameOver = false;
-
     private bool firstWaveStarted = false;
 
-    // UI Elements (pour afficher le score etc)
     public TMP_Text scoreText;
     public TMP_Text levelText;
     public TMP_Text waveText;
     public TMP_Text gameOverText;
 
-
     private void Awake()
     {
-        // Gérer le Singleton - Si une autre instance existe, la détruire
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);  // Persister entre les scènes
+            DontDestroyOnLoad(this.gameObject); // Persiste entre les scènes
         }
-        else
+        else if (Instance != this)
         {
-            Destroy(gameObject);  // Détruire l'objet si une autre instance existe
+            Destroy(gameObject); // Évite les doublons si une autre instance existe
         }
     }
-
 
     private void Update()
     {
@@ -67,10 +61,9 @@ public class GameManager : MonoBehaviour
         }
         else if (waveCountText != null)
         {
-            waveCountText.text = "Click to place the Base"; // N'affiche rien tant que la base n'est pas posée
+            waveCountText.text = "Click to place the Base";
         }
     }
-
 
     public void AddScore(int points)
     {
@@ -84,16 +77,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Méthode pour passer au niveau suivant
     private void LevelUp()
     {
         currentLevel++;
-        scoreToNextLevel += 100;  // Augmenter le score requis pour le prochain niveau
-
+        scoreToNextLevel += 100;
         Debug.Log("Niveau " + currentLevel + " atteint !");
     }
 
-    // Méthode pour démarrer la prochaine vague
     public void StartNextWave()
     {
         if (!isGameOver)
@@ -101,60 +91,63 @@ public class GameManager : MonoBehaviour
             currentWave++;
             Debug.Log("Vague " + currentWave + " commencée !");
 
-            // Augmenter la difficulté, par exemple, augmenter le nombre d'ennemis ou leur vitesse
-            // (Cela pourrait être une fonction qui change les paramètres du jeu selon la vague)
+            GameObject baseGO = GameObject.FindGameObjectWithTag("Base");
+            if (baseGO == null)
+            {
+                Debug.LogWarning("Base introuvable pour le spawn des ennemis.");
+                return;
+            }
 
-            // Tu peux aussi ajouter des événements comme une augmentation de la difficulté ou un délai avant la prochaine vague
-            GameObject baseGO = GameObject.FindGameObjectWithTag("Base"); // Trouve la base
-                if (baseGO == null)
+            Base baseScript = baseGO.GetComponent<Base>();
+            if (baseScript == null || baseScript.enemyPrefab == null)
+            {
+                Debug.LogWarning("Composant Base ou prefab ennemi manquant.");
+                return;
+            }
+
+            int enemiesToSpawn = 1 + (currentWave - 1) * 2;
+
+            for (int i = 0; i < enemiesToSpawn; i++)
+            {
+                Vector2 randomCircle = Random.insideUnitCircle.normalized * baseScript.spawnRadius;
+                Vector3 spawnPosition = baseGO.transform.position + new Vector3(randomCircle.x, 0, randomCircle.y);
+
+                GameObject enemyGO = Instantiate(baseScript.enemyPrefab, spawnPosition, Quaternion.identity);
+                Enemy enemy = enemyGO.GetComponent<Enemy>();
+                if (enemy != null)
                 {
-                    Debug.LogWarning("Base introuvable pour le spawn des ennemis.");
-                    return;
+                    enemy.Initialize(baseGO);
                 }
-
-                Base baseScript = baseGO.GetComponent<Base>();
-                if (baseScript == null || baseScript.enemyPrefab == null)
-                {
-                    Debug.LogWarning("Composant Base ou prefab ennemi manquant.");
-                    return;
-                }
-
-                int enemiesToSpawn = 1 + (currentWave - 1) * 2;
-
-                for (int i = 0; i < enemiesToSpawn; i++)
-                {
-                    Vector2 randomCircle = Random.insideUnitCircle.normalized * baseScript.spawnRadius;
-                    Vector3 spawnPosition = baseGO.transform.position + new Vector3(randomCircle.x, 0, randomCircle.y);
-
-                    GameObject enemyGO = Instantiate(baseScript.enemyPrefab, spawnPosition, Quaternion.identity);
-                    Enemy enemy = enemyGO.GetComponent<Enemy>();
-                    if (enemy != null)
-                    {
-                        enemy.Initialize(baseGO);
-                    }
-                }
+            }
         }
     }
 
-    // Méthode pour finir le jeu
     public void GameOver()
     {
         isGameOver = true;
-        gameOverText.gameObject.SetActive(true);
+        if (gameOverText != null)
+            gameOverText.gameObject.SetActive(true);
     }
+    
+    public void GoToMenu()
+    {
+        ResetGameValues();
+        SceneManager.LoadScene(0); // Retour menu
+    }
+    
 
-    public void RestartGame()
+    public void ResetGameValues()
     {
         score = 0;
-        currentWave = 1;
+        currentWave = 0;
         currentLevel = 1;
-        waveCooldown = 5f;
+        scoreToNextLevel = 100;
+        waveCooldown = 30f;
+        waveTimer = 0f;
         isGameOver = false;
-
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);  // Recharger la scène actuelle
+        Base.isBasePlaced = false;
     }
 
-    // Mettre à jour l'UI avec les informations actuelles
     private void UpdateUI()
     {
         if (scoreText != null)
@@ -168,6 +161,5 @@ public class GameManager : MonoBehaviour
 
         if (gameOverText != null && isGameOver)
             gameOverText.text = "GAME OVER!";
-
     }
 }
